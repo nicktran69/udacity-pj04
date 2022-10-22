@@ -6,12 +6,11 @@ import {createToDo} from "../../businessLogic/ToDo";
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     console.log("Processing Create Event ", event);
-    const authorization = event.headers.Authorization;
-    const split = authorization.split(' ');
-    const jwtToken = split[1];
-
-    const newTodo: CreateTodoRequest = JSON.parse(event.body);
-    const toDoItem = await createToDo(newTodo, jwtToken);
+    const author = event.headers.Authorization;
+    const split = author.split(' ');
+    const token = split[1];
+    const newTodoItem: CreateTodoRequest = JSON.parse(event.body);
+    const toDoItem = await createToDo(newTodoItem, token);
 
     return {
         statusCode: 201,

@@ -8,11 +8,9 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     const authorization = event.headers.Authorization;
     const split = authorization.split(' ');
     const jwtToken = split[1];
-
-    const todoId = event.pathParameters.todoId;
-    const updatedTodo: UpdateTodoRequest = JSON.parse(event.body);
-
-    const toDoItem = await updateToDo(updatedTodo, todoId, jwtToken);
+    const id = event.pathParameters.todoId;
+    const updateItemsData: UpdateTodoRequest = JSON.parse(event.body);
+    const items = await updateToDo(updateItemsData, id, jwtToken);
 
     return {
         statusCode: 200,
@@ -20,7 +18,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
             "Access-Control-Allow-Origin": "*",
         },
         body: JSON.stringify({
-            "item": toDoItem
+            "item": items
         }),
     }
 };

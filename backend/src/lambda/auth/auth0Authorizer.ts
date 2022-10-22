@@ -54,19 +54,6 @@ export const handler = async (
   }
 }
 
-async function verifyToken(authHeader: string): Promise<JwtPayload> {
-  try {
-    const token = getToken(authHeader)
-    const res = await Axios.get(jwksUrl);
-    const pemData = res['data']['keys'][0]['x5c'][0]
-    const cert = `-----BEGIN CERTIFICATE-----\n${pemData}\n-----END CERTIFICATE-----`
-
-    return verify(token, cert, { algorithms: ['RS256'] }) as JwtPayload
-  } catch(err){
-    logger.error('Fail to authenticate', err)
-  }
-}
-
 function getToken(authHeader: string): string {
   if (!authHeader) throw new Error('No authentication header')
 
@@ -77,5 +64,21 @@ function getToken(authHeader: string): string {
   const token = split[1]
 
   return token
+}
+
+async function verifyToken(authHeader: string): Promise<JwtPayload> {
+  try {
+    
+    const token = getToken(authHeader)
+    const res = await Axios.get(jwksUrl);
+    const keys = res.data.keys
+
+    const pemData = res['data']['keys'][0]['x5c'][0]
+    const cert = `-----BEGIN CERTIFICATE-----\n${pemData}\n-----END CERTIFICATE-----`
+
+    return verify(token, cert, { algorithms: ['RS256'] }) as JwtPayload
+  } catch(err){
+    logger.error('Fail to authenticate', err)
+  }
 }
 
