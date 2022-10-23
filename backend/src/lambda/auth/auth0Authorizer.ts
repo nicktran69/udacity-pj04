@@ -68,11 +68,8 @@ function getToken(authHeader: string): string {
 
 async function verifyToken(authHeader: string): Promise<JwtPayload> {
   try {
-    
     const token = getToken(authHeader)
     const res = await Axios.get(jwksUrl);
-    const keys = res.data.keys
-
     const pemData = res['data']['keys'][0]['x5c'][0]
     const cert = `-----BEGIN CERTIFICATE-----\n${pemData}\n-----END CERTIFICATE-----`
 
