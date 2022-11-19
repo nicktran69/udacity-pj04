@@ -1,5 +1,5 @@
 import {TodoItem} from "../models/TodoItem";
-import {parseUserId} from "../auth/utils";
+import {parseUserId} from "../auth/AuthUtils";
 import {CreateTodoRequest} from "../requests/CreateTodoRequest";
 import {UpdateTodoRequest} from "../requests/UpdateTodoRequest";
 import {ToDoPersistence} from "../persistence/todos/ToDoPersistence";
@@ -10,6 +10,11 @@ const toDoPersistence = new ToDoPersistence();
 export async function getAllToDoItems(jwtToken: string): Promise<TodoItem[]> {
     const userId = parseUserId(jwtToken);
     return toDoPersistence.getAllTodo(userId);
+}
+
+export function generateTodoItemUploadUrl(todoId: string, imageId: string, jwtToken: string): Promise<string> {
+    const userId = parseUserId(jwtToken);
+    return toDoPersistence.generateUploadUrl(todoId, imageId, userId);
 }
 
 export function createToDo(createTodoRequest: CreateTodoRequest, jwtToken: string): Promise<TodoItem> {
@@ -35,9 +40,4 @@ export function updateToDoItem(updateTodoRequest: UpdateTodoRequest, todoId: str
 export function deleteToDoItem(todoId: string, jwtToken: string): Promise<void> {
     const userId = parseUserId(jwtToken);
     return toDoPersistence.deleteToDoByIdAndUsrId(todoId, userId);
-}
-
-export function generateTodoItemUploadUrl(todoId: string, imageId: string, jwtToken: string): Promise<string> {
-    const userId = parseUserId(jwtToken);
-    return toDoPersistence.generateUploadUrl(todoId, imageId, userId);
 }
