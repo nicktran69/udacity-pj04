@@ -1,7 +1,7 @@
 import 'source-map-support/register'
 
 import {APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler} from 'aws-lambda'
-import {generateUploadUrl} from "../../businessLogic/ToDo";
+import {generateTodoItemUploadUrl} from "../../services/ToDoServices";
 import * as uuid from "uuid";
 import {decodeJWTToken} from "../../utils/JWTTokenUtils";
 
@@ -12,7 +12,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     const token = decodeJWTToken(event);
     const imageId = uuid.v4();
 
-    const URL: String = await generateUploadUrl(
+    const URL: String = await generateTodoItemUploadUrl(
         todoId,
         imageId,
         token

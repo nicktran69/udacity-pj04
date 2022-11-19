@@ -1,17 +1,16 @@
 import 'source-map-support/register'
 
 import {APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler} from 'aws-lambda';
-import {deleteToDo} from "../../businessLogic/ToDo";
+import {deleteToDoItem} from "../../services/ToDoServices";
 import {decodeJWTToken} from "../../utils/JWTTokenUtils";
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    console.log("Processing Delete Event ", event);
-    const token = decodeJWTToken(event);
     const id = event.pathParameters.todoId;
-    await deleteToDo(id, token);
-
+    console.log("Delete todo item id: ," + id + " by event info: ", event);
+    const token = decodeJWTToken(event);
+    await deleteToDoItem(id, token);
     return {
-        statusCode: 200,
+        statusCode: 202,
         headers: {
             "Access-Control-Allow-Origin": "*",
         },

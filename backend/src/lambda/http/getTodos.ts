@@ -1,14 +1,13 @@
 import 'source-map-support/register'
 
 import {APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler} from 'aws-lambda';
-import {getAllToDo} from "../../businessLogic/ToDo";
+import {getAllToDoItems} from "../../services/ToDoServices";
 import {decodeJWTToken} from "../../utils/JWTTokenUtils";
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    // TODO: Get all TODO items for a current user
-    console.log("Processing Get Event ", event);
+    console.log("Get todo item by event: ", event);
     const token = decodeJWTToken(event);
-    const toDoItems = await getAllToDo(token);
+    const toDoItems = await getAllToDoItems(token);
 
     return {
         statusCode: 200,
