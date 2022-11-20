@@ -35,7 +35,6 @@ provider:
        - Effect: Allow
          Action:
            - xray:PutTelemetryRecords
-           - xray:PutTraceSegments
          Resource: "*"
 
 functions:
@@ -74,7 +73,7 @@ functions:
             summary: "Create a new todo item"
             description: "Create a new todo item"
             requestModels:
-              "application/json": CreateTodoRequest
+              "application/json": ../models/create-todo-model.json
           reqValidatorName: RequestBodyValidator
     iamRoleStatementsName: ${self:provider.environment.PROJECT_NAME}-create-todo-role-${self:provider.stage}
     iamRoleStatements:
@@ -100,7 +99,7 @@ functions:
             summary: "Update a todo item"
             description: "Update a todo item"
             requestModels:
-              "application/json": UpdateTodoRequest
+              "application/json": ../models/update-todo-model.json
           reqValidatorName: RequestBodyValidator
     iamRoleStatementsName: ${self:provider.environment.PROJECT_NAME}-update-todo-role-${self:provider.stage}
     iamRoleStatements:

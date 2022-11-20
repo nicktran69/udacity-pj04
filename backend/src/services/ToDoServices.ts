@@ -2,19 +2,28 @@ import {TodoItem} from "../models/TodoItem";
 import {parseUserId} from "../auth/AuthUtils";
 import {CreateTodoRequest} from "../requests/CreateTodoRequest";
 import {UpdateTodoRequest} from "../requests/UpdateTodoRequest";
-import {ToDoPersistence} from "../persistence/todos/ToDoPersistence";
+import {CreateToDoPersistence} from "../persistence/todos/CreateTodo";
+import {GenerateToDoItemPersistence} from "../persistence/todos/GenerateToDoItemUrl";
+import {DeleteToDoItemByIdAndUsrIdPersistence} from "../persistence/todos/DeleteToDoItemByIdAndUsrId";
+import {GetAllToDoPersistence} from "../persistence/todos/GetAllTodoItem";
+import {UpdateToDoItemByIdAndUsrIdPersistence} from "../persistence/todos/UpdateToDoItemByIdAndUsrId";
 
 const uuidv4 = require('uuid/v4');
-const toDoPersistence = new ToDoPersistence();
+const createToDoPersistence = new CreateToDoPersistence();
+const generateToDoItemPersistence = new GenerateToDoItemPersistence();
+const deleteToDoItemByIdAndUsrIdPersistence = new DeleteToDoItemByIdAndUsrIdPersistence();
+const getAllToDoPersistence = new GetAllToDoPersistence();
+const updateToDoItemByIdAndUsrIdPersistence = new UpdateToDoItemByIdAndUsrIdPersistence();
+
 
 export async function getAllToDoItems(jwtToken: string): Promise<TodoItem[]> {
     const userId = parseUserId(jwtToken);
-    return toDoPersistence.getAllTodoItem(userId);
+    return getAllToDoPersistence.getAllTodoItem(userId);
 }
 
 export function generateTodoItemUploadUrl(todoId: string, imageId: string, jwtToken: string): Promise<string> {
     const userId = parseUserId(jwtToken);
-    return toDoPersistence.generateUploadTodoItemUrl(todoId, imageId, userId);
+    return generateToDoItemPersistence.generateUploadTodoItemUrl(todoId, imageId, userId);
 }
 
 export function createToDo(createTodoRequest: CreateTodoRequest, jwtToken: string): Promise<TodoItem> {
@@ -22,7 +31,7 @@ export function createToDo(createTodoRequest: CreateTodoRequest, jwtToken: strin
     const todoId =  uuidv4();
     const s3BucketName = process.env.S3_BUCKET_NAME;
     
-    return toDoPersistence.createToDoItem({
+    return createToDoPersistence.createToDoItem({
         userId: userId,
         todoId: todoId,
         attachmentUrl:  `https://${s3BucketName}.s3.amazonaws.com/${todoId}`, 
@@ -34,10 +43,10 @@ export function createToDo(createTodoRequest: CreateTodoRequest, jwtToken: strin
 
 export function updateToDoItem(updateTodoRequest: UpdateTodoRequest, todoId: string, jwtToken: string): Promise<void> {
     const userId = parseUserId(jwtToken);
-    return toDoPersistence.updateToDoItemByIdAndUsrId(updateTodoRequest, todoId, userId);
+    return updateToDoItemByIdAndUsrIdPersistence.updateToDoItemByIdAndUsrId(updateTodoRequest, todoId, userId);
 }
 
 export function deleteToDoItem(todoId: string, jwtToken: string): Promise<void> {
     const userId = parseUserId(jwtToken);
-    return toDoPersistence.deleteToDoItemByIdAndUsrId(todoId, userId);
+    return deleteToDoItemByIdAndUsrIdPersistence.deleteToDoItemByIdAndUsrId(todoId, userId);
 }
